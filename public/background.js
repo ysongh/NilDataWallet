@@ -25,6 +25,21 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
     chrome.action.setBadgeText({ text: '!' });
     chrome.action.setBadgeBackgroundColor({ color: '#ff4444' });
     
+    // Open the extension popup if requested
+    if (message.openPopup) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0]) {
+          // Note: This opens the popup programmatically
+          chrome.action.openPopup().then(() => {
+            sendResponse({ popupOpened: true });
+          }).catch((error) => {
+            console.log('Could not open popup:', error);
+            sendResponse({ popupOpened: false });
+          });
+        }
+      });
+    }
+    
     // Keep the message channel open
     return true;
   }
