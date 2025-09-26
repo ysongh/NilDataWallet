@@ -5,9 +5,16 @@ interface TabInfo {
   url?: string;
 }
 
+interface AccessRequest {
+  id: number;
+  origin: string;
+  timestamp: number;
+}
+
 function App() {
   const [currentTab, setCurrentTab] = useState<TabInfo>({})
   const [count, setCount] = useState(0)
+  const [pendingRequests, setPendingRequests] = useState<AccessRequest[]>([])
 
   useEffect(() => {
     // Get current tab information
@@ -22,34 +29,72 @@ function App() {
       })
     }
 
-    // Listen for messages from content script
-    const handleMessage = (message: any, sender: any, sendResponse: any) => {
-      if (message.type === 'GET_EXTENSION_DATA') {
-        // Send extension data back to content script
-        const extensionData = {
-          tabInfo: currentTab,
-          count: count,
-          timestamp: new Date().toISOString(),
-          extensionVersion: '1.0.0'
-        };
-        
-        sendResponse(extensionData);
-        console.log(sender)
+    // Get pending access requests
+    chrome.runtime.sendMessage({ type: 'GET_PENDING_REQUESTS' }, (response) => {
+      if (response?.requests) {
+        setPendingRequests(response.requests)
       }
-    };
+    })
+  }, [])
 
-    if (chrome?.runtime?.onMessage) {
-      chrome.runtime.onMessage.addListener(handleMessage);
-      
-      return () => {
-        chrome.runtime.onMessage.removeListener(handleMessage);
-      };
-    }
-  }, [currentTab, count])
+  const handleAccessRequest = (requestId: number, granted: boolean) => {
+    chrome.runtime.sendMessage({
+      type: 'RESPOND_TO_REQUEST',
+      requestId,
+      granted
+    })
+    
+    // Remove from local state
+    setPendingRequests(prev => prev.filter(r => r.id !== requestId))
+  }
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <h1>My React Extension</h1>
+      
+      {/* Access Requests Section */}
+      {pendingRequests.length > 0 && (
+        <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#fff3cd', borderRadius: '4px', border: '1px solid #ffeaa7' }}>
+          <h3 style={{ margin: '0 0 10px 0', color: '#856404' }}>Access Requests</h3>
+          {pendingRequests.map(request => (
+            <div key={request.id} style={{ marginBottom: '10px', padding: '10px', backgroundColor: 'white', borderRadius: '4px' }}>
+              <p style={{ margin: '0 0 8px 0', fontWeight: 'bold' }}>{request.origin}</p>
+              <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#666' }}>
+                Requested: {new Date(request.timestamp).toLocaleTimeString()}
+              </p>
+              <button
+                onClick={() => handleAccessRequest(request.id, true)}
+                style={{
+                  padding: '6px 12px',
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '3px',
+                  cursor: 'pointer',
+                  marginRight: '8px',
+                  fontSize: '12px'
+                }}
+              >
+                Allow
+              </button>
+              <button
+                onClick={() => handleAccessRequest(request.id, false)}
+                style={{
+                  padding: '6px 12px',
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '3px',
+                  cursor: 'pointer',
+                  fontSize: '12px'
+                }}
+              >
+                Deny
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
       
       <div style={{ marginBottom: '20px' }}>
         <h3>Current Tab:</h3>
@@ -96,4 +141,4 @@ function App() {
   )
 }
 
-export default App;
+export default App
