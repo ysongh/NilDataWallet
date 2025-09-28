@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Keypair } from '@nillion/nuc';
 import { SecretVaultBuilderClient } from '@nillion/secretvaults';
 
@@ -58,6 +59,10 @@ function ReadCollection() {
   return (
     <div style={{ padding: '2rem' }}>
       <h1>Nillion Collection Reader</h1>
+
+      <Link to="/test">
+        Test
+      </Link>
 
       <div>
         <div>
