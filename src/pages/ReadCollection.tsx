@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Keypair } from '@nillion/nuc';
 import { SecretVaultBuilderClient } from '@nillion/secretvaults';
 
+import { getLocalStorage, setLocalStorage } from '../utils/localStorage/localStorage';
+
 function ReadCollection() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -54,7 +56,13 @@ function ReadCollection() {
     };
     console.log(identity);
     setNillionapikey(identity.privateKey);
+    setLocalStorage("apikey", identity.privateKey);
   }
+
+  useEffect(() => {
+    const fetchApikey = getLocalStorage("apikey");
+    setNillionapikey(fetchApikey);
+  }, [])
 
   useEffect(() => {
     if (
