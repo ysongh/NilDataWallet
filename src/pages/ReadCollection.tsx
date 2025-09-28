@@ -10,6 +10,7 @@ function ReadCollection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [nillionapikey, setNillionapikey] = useState<string>("");
+  const [nillionDiD, setNillionDiD] = useState<string>("");
   const [nillioncollectionid, setNillioncollectionid] = useState<string>("");
 
   const readCollection = async () => {
@@ -56,12 +57,14 @@ function ReadCollection() {
     };
     console.log(identity);
     setNillionapikey(identity.privateKey);
-    setLocalStorage("apikey", identity.privateKey);
+    setLocalStorage("apikey", identity);
   }
 
   useEffect(() => {
-    const fetchApikey = getLocalStorage("apikey");
-    setNillionapikey(fetchApikey);
+    const identity = getLocalStorage("apikey");
+    console.log(identity);
+    setNillionapikey(identity.privateKey);
+    setNillionDiD(identity.did);
   }, [])
 
   useEffect(() => {
@@ -82,6 +85,8 @@ function ReadCollection() {
       <Link to="/test">
         Test
       </Link>
+
+      <p>{nillionDiD}</p>
 
       <div>
         <div>
