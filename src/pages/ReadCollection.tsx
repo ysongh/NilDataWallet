@@ -45,6 +45,17 @@ function ReadCollection() {
     }
   };
 
+  const createAPIKey = () => {
+    const keypair = Keypair.generate();
+    const identity = {
+      privateKey: keypair.privateKey('hex'),
+      publicKey: keypair.publicKey('hex'),
+      did: keypair.toDidString(),
+    };
+    console.log(identity);
+    setNillionapikey(identity.privateKey);
+  }
+
   useEffect(() => {
     if (
       nillionapikey &&
@@ -88,6 +99,10 @@ function ReadCollection() {
       </div>
 
       <p>Reading all records in your Nillion Private Storage collection</p>
+
+      <button onClick={createAPIKey}>
+        Create API Key
+      </button>
 
       <button onClick={readCollection} disabled={loading}>
         {loading ? 'Loading...' : 'Refresh Data'}
