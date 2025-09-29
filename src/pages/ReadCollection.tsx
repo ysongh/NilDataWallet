@@ -63,7 +63,9 @@ function ReadCollection() {
   useEffect(() => {
     const identity = getLocalStorage("apikey");
     console.log(identity);
+    //@ts-ignore
     setNillionapikey(identity.privateKey);
+     //@ts-ignore
     setNillionDiD(identity.did);
   }, [])
 
