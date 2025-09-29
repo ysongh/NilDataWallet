@@ -63,10 +63,12 @@ function ReadCollection() {
   useEffect(() => {
     const identity = getLocalStorage("apikey");
     console.log(identity);
-    //@ts-ignore
-    setNillionapikey(identity.privateKey);
-     //@ts-ignore
-    setNillionDiD(identity.did);
+    if (identity) {
+      //@ts-ignore
+      setNillionapikey(identity.privateKey);
+      //@ts-ignore
+      setNillionDiD(identity.did);
+    }
   }, [])
 
   useEffect(() => {
@@ -86,6 +88,9 @@ function ReadCollection() {
 
       <Link to="/test">
         Test
+      </Link>
+      <Link to="/createdid">
+        Create DID
       </Link>
 
       <p>{nillionDiD}</p>
