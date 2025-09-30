@@ -65,7 +65,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // Send message directly to the web app tab
       chrome.tabs.sendMessage(request.tabId, {
         type: 'ACCESS_RESPONSE',
-        granted: message.granted
+        granted: message.granted,
+        nillionDiD: message.nillionDiD,
+        nillionDiDObj: message.nillionDiDObj
       }).catch(error => {
         console.log('Error sending response to tab:', error);
       });

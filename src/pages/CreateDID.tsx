@@ -14,6 +14,7 @@ export default function CreateDID() {
         privateKey: keypair.privateKey('hex'),
         publicKey: keypair.publicKey('hex'),
         did: keypair.toDidString(),
+        didObj: keypair.toDid(),
       };
       console.log(identity);
       setLocalStorage("apikey", identity);
