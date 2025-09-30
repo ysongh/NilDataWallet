@@ -10,13 +10,13 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
   }
   
   if (message.type === 'REQUEST_ACCESS') {
-    // Store the request
+    // Store the request with tab ID
     const request = {
       id: Date.now(),
       origin: sender.origin,
       timestamp: message.timestamp,
-      sender: sender,
-      sendResponse: sendResponse
+      tabId: sender.tab?.id,
+      sender: sender
     };
     
     pendingRequests.push(request);
@@ -27,20 +27,16 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
     
     // Open the extension popup if requested
     if (message.openPopup) {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0]) {
-          // Note: This opens the popup programmatically
-          chrome.action.openPopup().then(() => {
-            sendResponse({ popupOpened: true });
-          }).catch((error) => {
-            console.log('Could not open popup:', error);
-            sendResponse({ popupOpened: false });
-          });
-        }
+      chrome.action.openPopup().then(() => {
+        sendResponse({ popupOpened: true });
+      }).catch((error) => {
+        console.log('Could not open popup:', error);
+        sendResponse({ popupOpened: false });
       });
+    } else {
+      sendResponse({ popupOpened: false });
     }
     
-    // Keep the message channel open
     return true;
   }
   
@@ -65,9 +61,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   
   if (message.type === 'RESPOND_TO_REQUEST') {
     const request = pendingRequests.find(r => r.id === message.requestId);
-    if (request) {
-      // Send response back to web app
-      request.sendResponse({ granted: message.granted });
+    if (request && request.tabId) {
+      // Send message directly to the web app tab
+      chrome.tabs.sendMessage(request.tabId, {
+        type: 'ACCESS_RESPONSE',
+        granted: message.granted
+      }).catch(error => {
+        console.log('Error sending response to tab:', error);
+      });
       
       // Remove from pending
       pendingRequests = pendingRequests.filter(r => r.id !== message.requestId);
@@ -79,5 +80,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         chrome.action.setBadgeText({ text: pendingRequests.length.toString() });
       }
     }
+    
+    sendResponse({ success: true });
   }
 });
