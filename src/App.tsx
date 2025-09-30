@@ -1,5 +1,6 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 
+import Navbar from "./components/Navbar";
 import CreateDID from "./pages/CreateDID";
 import ReadCollection from "./pages/ReadCollection";
 import Test from "./pages/Test";
@@ -7,6 +8,7 @@ import Test from "./pages/Test";
 function App() {
   return (
     <HashRouter>
+      <Navbar />
       <Routes>
         <Route
           path="/createdid"
