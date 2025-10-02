@@ -3,6 +3,7 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import CreateDID from "./pages/CreateDID";
 import ReadCollection from "./pages/ReadCollection";
+import MyData from "./pages/MyData";
 import Test from "./pages/Test";
 
 function App() {
@@ -10,6 +11,9 @@ function App() {
     <HashRouter>
       <Navbar />
       <Routes>
+        <Route
+          path="/mydata"
+          element={<MyData />} />
         <Route
           path="/createdid"
           element={<CreateDID />} />
