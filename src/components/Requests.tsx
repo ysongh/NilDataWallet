@@ -13,11 +13,18 @@ interface AccessRequest {
   timestamp: number;
 }
 
+interface ReceivedData {
+  message: string;
+  timestamp: number;
+  origin: string;
+}
+
 function Requests() {
   const [currentTab, setCurrentTab] = useState<TabInfo>({})
   const [pendingRequests, setPendingRequests] = useState<AccessRequest[]>([])
   const [nillionDiD, setNillionDiD] = useState<string>("");
   const [nillionDiDObj, setNillionDiDObj] = useState<any>("");
+  const [receivedDataList, setReceivedDataList] = useState<ReceivedData[]>([])
 
   useEffect(() => {
     const identity = getLocalStorage("apikey");
@@ -48,6 +55,19 @@ function Requests() {
         setPendingRequests(response.requests)
       }
     })
+
+    // Listen for data from web apps
+    const messageListener = (message: any) => {
+      if (message.type === 'DATA_RECEIVED') {
+        setReceivedDataList(prev => [message.data, ...prev].slice(0, 10)) // Keep last 10
+      }
+    }
+
+    chrome.runtime.onMessage.addListener(messageListener)
+
+    return () => {
+      chrome.runtime.onMessage.removeListener(messageListener)
+    }
   }, [])
 
   const handleAccessRequest = (requestId: number, granted: boolean) => {
@@ -106,6 +126,24 @@ function Requests() {
               >
                 Deny
               </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Received Data Section */}
+      {receivedDataList.length > 0 && (
+        <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#d4edda', borderRadius: '4px', border: '1px solid #c3e6cb' }}>
+          <h3 style={{ margin: '0 0 10px 0', color: '#155724' }}>Received Data</h3>
+          {receivedDataList.map((data, index) => (
+            <div key={index} style={{ marginBottom: '10px', padding: '10px', backgroundColor: 'white', borderRadius: '4px' }}>
+              <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>{data.message}</p>
+              <p style={{ margin: '0', fontSize: '12px', color: '#666' }}>
+                From: {data.origin}
+              </p>
+              <p style={{ margin: '0', fontSize: '12px', color: '#666' }}>
+                At: {new Date(data.timestamp).toLocaleString()}
+              </p>
             </div>
           ))}
         </div>

@@ -51,6 +51,29 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
     });
     return true;
   }
+  
+  if (message.type === 'CREATE_DATA') {
+    // Handle data from web app
+    console.log('Received data from web app:', message.data);
+    
+    // Broadcast to popup if it's open
+    chrome.runtime.sendMessage({
+      type: 'DATA_RECEIVED',
+      data: message.data
+    }).catch(() => {
+      // Popup might not be open, that's okay
+      console.log('Popup not open, data logged in background');
+    });
+    
+    // Send back a success response to the web app
+    sendResponse({
+      success: true,
+      message: 'Data received successfully',
+      receivedData: message.data
+    });
+    
+    return true;
+  }
 });
 
 // Handle messages from popup
