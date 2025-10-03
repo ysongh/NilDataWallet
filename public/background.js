@@ -64,6 +64,17 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
       // Popup might not be open, that's okay
       console.log('Popup not open, data logged in background');
     });
+
+    if (message.openPopup) {
+      chrome.action.openPopup().then(() => {
+        sendResponse({ popupOpened: true });
+      }).catch((error) => {
+        console.log('Could not open popup:', error);
+        sendResponse({ popupOpened: false });
+      });
+    } else {
+      sendResponse({ popupOpened: false });
+    }
     
     // Send back a success response to the web app
     sendResponse({
