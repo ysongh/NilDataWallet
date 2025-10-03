@@ -11,12 +11,8 @@ interface AccessRequest {
   id: number;
   origin: string;
   timestamp: number;
-}
-
-interface ReceivedData {
-  message: string;
-  timestamp: number;
-  origin: string;
+  type: string;
+  message?: string;
 }
 
 function Requests() {
@@ -24,7 +20,6 @@ function Requests() {
   const [pendingRequests, setPendingRequests] = useState<AccessRequest[]>([])
   const [nillionDiD, setNillionDiD] = useState<string>("");
   const [nillionDiDObj, setNillionDiDObj] = useState<any>("");
-  const [receivedDataList, setReceivedDataList] = useState<ReceivedData[]>([])
 
   useEffect(() => {
     const identity = getLocalStorage("apikey");
@@ -51,23 +46,11 @@ function Requests() {
 
     // Get pending access requests
     chrome.runtime.sendMessage({ type: 'GET_PENDING_REQUESTS' }, (response) => {
+      console.log(response);
       if (response?.requests) {
         setPendingRequests(response.requests)
       }
     })
-
-    // Listen for data from web apps
-    const messageListener = (message: any) => {
-      if (message.type === 'DATA_RECEIVED') {
-        setReceivedDataList(prev => [message.data, ...prev].slice(0, 10)) // Keep last 10
-      }
-    }
-
-    chrome.runtime.onMessage.addListener(messageListener)
-
-    return () => {
-      chrome.runtime.onMessage.removeListener(messageListener)
-    }
   }, [])
 
   const handleAccessRequest = (requestId: number, granted: boolean) => {
@@ -83,6 +66,8 @@ function Requests() {
     setPendingRequests(prev => prev.filter(r => r.id !== requestId))
   }
 
+  console.log(pendingRequests, "pendingRequests")
+
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <h1>My React Extension</h1>
@@ -94,9 +79,12 @@ function Requests() {
           {pendingRequests.map(request => (
             <div key={request.id} style={{ marginBottom: '10px', padding: '10px', backgroundColor: 'white', borderRadius: '4px' }}>
               <p style={{ margin: '0 0 8px 0', fontWeight: 'bold' }}>{request.origin}</p>
-              <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#666' }}>
-                Requested: {new Date(request.timestamp).toLocaleTimeString()}
-              </p>
+              {request.type === "Get DID" ? <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#666' }}>
+                  Requested: {new Date(request.timestamp).toLocaleTimeString()}
+                </p> :  <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#666' }}>
+                  Data: {request.message}
+                </p>
+              }
               <button
                 onClick={() => handleAccessRequest(request.id, true)}
                 style={{
@@ -126,24 +114,6 @@ function Requests() {
               >
                 Deny
               </button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Received Data Section */}
-      {receivedDataList.length > 0 && (
-        <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#d4edda', borderRadius: '4px', border: '1px solid #c3e6cb' }}>
-          <h3 style={{ margin: '0 0 10px 0', color: '#155724' }}>Received Data</h3>
-          {receivedDataList.map((data, index) => (
-            <div key={index} style={{ marginBottom: '10px', padding: '10px', backgroundColor: 'white', borderRadius: '4px' }}>
-              <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>{data.message}</p>
-              <p style={{ margin: '0', fontSize: '12px', color: '#666' }}>
-                From: {data.origin}
-              </p>
-              <p style={{ margin: '0', fontSize: '12px', color: '#666' }}>
-                At: {new Date(data.timestamp).toLocaleString()}
-              </p>
             </div>
           ))}
         </div>

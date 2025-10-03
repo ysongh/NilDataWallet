@@ -13,6 +13,7 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
     // Store the request with tab ID
     const request = {
       id: Date.now(),
+      type: "Get DID",
       origin: sender.origin,
       timestamp: message.timestamp,
       tabId: sender.tab?.id,
@@ -51,20 +52,26 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
     });
     return true;
   }
-  
-  if (message.type === 'CREATE_DATA') {
-    // Handle data from web app
-    console.log('Received data from web app:', message.data);
-    
-    // Broadcast to popup if it's open
-    chrome.runtime.sendMessage({
-      type: 'DATA_RECEIVED',
-      data: message.data
-    }).catch(() => {
-      // Popup might not be open, that's okay
-      console.log('Popup not open, data logged in background');
-    });
 
+  if (message.type === 'CREATE_DATA') {
+    // Store the request with tab ID
+    const request = {
+      id: Date.now(),
+      type: "Create Data",
+      origin: sender.origin,
+      timestamp: message.timestamp,
+      tabId: sender.tab?.id,
+      sender: sender,
+      message: message.data.message
+    };
+    
+    pendingRequests.push(request);
+    
+    // Set badge to show pending request
+    chrome.action.setBadgeText({ text: '!' });
+    chrome.action.setBadgeBackgroundColor({ color: '#ff4444' });
+    
+    // Open the extension popup if requested
     if (message.openPopup) {
       chrome.action.openPopup().then(() => {
         sendResponse({ popupOpened: true });
@@ -75,13 +82,6 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
     } else {
       sendResponse({ popupOpened: false });
     }
-    
-    // Send back a success response to the web app
-    sendResponse({
-      success: true,
-      message: 'Data received successfully',
-      receivedData: message.data
-    });
     
     return true;
   }
