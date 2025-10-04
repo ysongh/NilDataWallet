@@ -72,7 +72,7 @@ function Requests() {
 
   console.log(pendingRequests, "pendingRequests")
 
-  const createData = async () => {
+  const createData = async (requestId: number) => {
     console.log(pendingRequests[0])
 
     const userPrivateData = {
@@ -109,6 +109,13 @@ function Requests() {
 
     console.log(uploadResults);
 
+    chrome.runtime.sendMessage({
+      type: 'CREATE_DATA_SUCCESS',
+      requestId
+    })
+    
+    // Remove from local state
+    setPendingRequests(prev => prev.filter(r => r.id !== requestId))
   }
 
   return (
@@ -158,8 +165,8 @@ function Requests() {
                 Deny
               </button>
               <button
-                onClick={() => createData()}
-                className="flex-1 py-2 px-4 text-sm font-medium border-b-2 transition-colors border-blue-600 text-blue-600"
+                onClick={() => createData(request.id)}
+                className="w-full py-3 px-4 rounded-md text-white font-medium transition-colors bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Create Data
               </button>
