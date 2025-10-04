@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { Keypair } from '@nillion/nuc';
+import { SecretVaultUserClient } from '@nillion/secretvaults';
 
 import { getLocalStorage } from '../utils/localStorage/localStorage';
 
@@ -20,6 +22,7 @@ function Requests() {
   const [pendingRequests, setPendingRequests] = useState<AccessRequest[]>([])
   const [nillionDiD, setNillionDiD] = useState<string>("");
   const [nillionDiDObj, setNillionDiDObj] = useState<any>("");
+  const [identity, setIdentity] = useState<any>("");
 
   useEffect(() => {
     const identity = getLocalStorage("apikey");
@@ -28,6 +31,7 @@ function Requests() {
       setNillionDiD(identity.did);
       //@ts-ignore
       setNillionDiDObj(identity.didObj);
+      setIdentity(identity);
     }
   }, [])
 
@@ -67,6 +71,45 @@ function Requests() {
   }
 
   console.log(pendingRequests, "pendingRequests")
+
+  const createData = async () => {
+    console.log(pendingRequests[0])
+
+    const userPrivateData = {
+      _id: crypto.randomUUID(),
+      name: "Coder",
+      event_name: 'Hackathon',
+      travel_date: '02/04/2025',
+      departure_airport: 'John F. Kennedy International',
+      destination: 'London Heathrow',
+      gate_number: '1',
+      additional_note: 'I like to read book'
+    };
+
+    const user = await SecretVaultUserClient.from({
+      baseUrls: "https://nildb-stg-n1.nillion.network,https://nildb-stg-n2.nillion.network,https://nildb-stg-n3.nillion.network".split(','),
+      keypair: Keypair.from(identity.privateKey),
+    });
+    // User uploads data and grants builder limited access
+    // @ts-ignore
+    const uploadResults = await user.createData(pendingRequests[0].delegationToken, {
+       // @ts-ignore
+      owner: nillionDiD,
+      acl: {
+         // @ts-ignore
+        grantee: pendingRequests[0].builderDid, // Grant access to the builder
+        read: true, // Builder can read the data
+        write: false, // Builder cannot modify the data
+        execute: true, // Builder can run queries on the data
+      },
+       // @ts-ignore
+      collection: pendingRequests[0].collectionId,
+      data: [userPrivateData],
+    });
+
+    console.log(uploadResults);
+
+  }
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
@@ -113,6 +156,12 @@ function Requests() {
                 }}
               >
                 Deny
+              </button>
+              <button
+                onClick={() => createData()}
+                className="flex-1 py-2 px-4 text-sm font-medium border-b-2 transition-colors border-blue-600 text-blue-600"
+              >
+                Create Data
               </button>
             </div>
           ))}
