@@ -129,13 +129,11 @@ function Requests() {
           {pendingRequests.map(request => (
             <div key={request.id} style={{ marginBottom: '10px', padding: '10px', backgroundColor: 'white', borderRadius: '4px' }}>
               <p style={{ margin: '0 0 8px 0', fontWeight: 'bold' }}>{request.origin}</p>
-              {request.type === "Get DID" ? <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#666' }}>
+              {request.type === "Get DID" ? <>
+                <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#666' }}>
                   Requested: {new Date(request.timestamp).toLocaleTimeString()}
-                </p> :  <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#666' }}>
-                  Data: {request.message}
                 </p>
-              }
-              <button
+                <button
                 onClick={() => handleAccessRequest(request.id, true)}
                 style={{
                   padding: '6px 12px',
@@ -164,12 +162,18 @@ function Requests() {
               >
                 Deny
               </button>
-              <button
-                onClick={() => createData(request.id)}
-                className="w-full py-3 px-4 rounded-md text-white font-medium transition-colors bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Create Data
-              </button>
+              </> :  <>
+                <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#666' }}>
+                    Data: {request.message}
+                  </p>
+                <button
+                  onClick={() => createData(request.id)}
+                  className="w-full py-3 px-4 rounded-md text-white font-medium transition-colors bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  Create Data
+                </button>
+                </>
+              }
             </div>
           ))}
         </div>
