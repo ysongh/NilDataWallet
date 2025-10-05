@@ -124,56 +124,44 @@ function Requests() {
       
       {/* Access Requests Section */}
       {pendingRequests.length > 0 && (
-        <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#fff3cd', borderRadius: '4px', border: '1px solid #ffeaa7' }}>
-          <h3 style={{ margin: '0 0 10px 0', color: '#856404' }}>Access Requests</h3>
+        <div className="mb-5 p-4 bg-amber-50 rounded-lg border border-amber-200">
+          <h3 className="m-0 mb-3 text-amber-800 font-semibold text-lg">Access Requests</h3>
           {pendingRequests.map(request => (
-            <div key={request.id} style={{ marginBottom: '10px', padding: '10px', backgroundColor: 'white', borderRadius: '4px' }}>
-              <p style={{ margin: '0 0 8px 0', fontWeight: 'bold' }}>{request.origin}</p>
-              {request.type === "Get DID" ? <>
-                <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#666' }}>
-                  Requested: {new Date(request.timestamp).toLocaleTimeString()}
-                </p>
-                <button
-                onClick={() => handleAccessRequest(request.id, true)}
-                style={{
-                  padding: '6px 12px',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                  marginRight: '8px',
-                  fontSize: '12px'
-                }}
-              >
-                Allow
-              </button>
-              <button
-                onClick={() => handleAccessRequest(request.id, false)}
-                style={{
-                  padding: '6px 12px',
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                  fontSize: '12px'
-                }}
-              >
-                Deny
-              </button>
-              </> :  <>
-                <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#666' }}>
+            <div key={request.id} className="mb-3 p-3 bg-white rounded-md shadow-sm border border-gray-100">
+              <p className="m-0 mb-2 font-bold text-gray-800">{request.origin}</p>
+              {request.type === "Get DID" ? (
+                <>
+                  <p className="m-0 mb-3 text-xs text-gray-600">
+                    Requested: {new Date(request.timestamp).toLocaleTimeString()}
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleAccessRequest(request.id, true)}
+                      className="flex-1 py-2 px-4 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    >
+                      Allow
+                    </button>
+                    <button
+                      onClick={() => handleAccessRequest(request.id, false)}
+                      className="flex-1 py-2 px-4 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                    >
+                      Deny
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="m-0 mb-3 text-xs text-gray-600">
                     Data: {request.message}
                   </p>
-                <button
-                  onClick={() => createData(request.id)}
-                  className="w-full py-3 px-4 rounded-md text-white font-medium transition-colors bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
-                  Create Data
-                </button>
+                  <button
+                    onClick={() => createData(request.id)}
+                    className="w-full py-3 px-4 rounded-md text-white font-medium transition-colors bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  >
+                    Create Data
+                  </button>
                 </>
-              }
+              )}
             </div>
           ))}
         </div>
