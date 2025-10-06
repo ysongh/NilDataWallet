@@ -108,6 +108,15 @@ function Requests() {
     setPendingRequests(prev => prev.filter(r => r.id !== requestId))
   }
 
+  const rejectRequest = (requestId: number) => {
+    chrome.runtime.sendMessage({
+      type: 'REJECT',
+      requestId
+    })
+
+    setPendingRequests(prev => prev.filter(r => r.id !== requestId))
+  }
+
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <h1>My React Extension</h1>
@@ -132,10 +141,10 @@ function Requests() {
                       Allow
                     </button>
                     <button
-                      onClick={() => handleAccessRequest(request.id, false)}
+                      onClick={() => rejectRequest(request.id)}
                       className="flex-1 py-2 px-4 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                     >
-                      Deny
+                      Reject
                     </button>
                   </div>
                 </>
@@ -146,12 +155,20 @@ function Requests() {
                       {JSON.stringify(request.userPrivateData, null, 2)}
                     </pre>
                   </p>
-                  <button
-                    onClick={() => createData(request.id)}
-                    className="w-full py-3 px-4 rounded-md text-white font-medium transition-colors bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                  >
-                    Create Data
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => createData(request.id)}
+                      className="flex-1 py-2 px-4 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => rejectRequest(request.id)}
+                      className="flex-1 py-2 px-4 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                    >
+                      Reject
+                    </button>
+                  </div>
                 </>
               )}
             </div>

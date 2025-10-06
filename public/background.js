@@ -148,4 +148,29 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     
     sendResponse({ success: true });
   }
+
+  if (message.type === 'REJECT') {
+    const request = pendingRequests.find(r => r.id === message.requestId);
+    
+    if (request && request.tabId) {
+      // Send message directly to the web app tab
+      chrome.tabs.sendMessage(request.tabId, {
+        type: 'REJECTED',
+      }).catch(error => {
+        console.log('Error sending response to tab:', error);
+      });
+      
+      // Remove from pending
+      pendingRequests = pendingRequests.filter(r => r.id !== message.requestId);
+      
+      // Update badge
+      if (pendingRequests.length === 0) {
+        chrome.action.setBadgeText({ text: '' });
+      } else {
+        chrome.action.setBadgeText({ text: pendingRequests.length.toString() });
+      }
+    }
+    
+    sendResponse({ success: true });
+  }
 });
