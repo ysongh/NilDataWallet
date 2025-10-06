@@ -3,6 +3,7 @@ import { Keypair } from '@nillion/nuc';
 import { SecretVaultUserClient } from '@nillion/secretvaults';
 
 import { getLocalStorage } from '../utils/localStorage/localStorage';
+import Document from '../components/Document';
 
 function MyData() {
   const [data, setData] = useState<any[]>([]);
@@ -28,7 +29,7 @@ function MyData() {
       console.log(references);
 
       //@ts-ignore
-      setData(references);
+      setData(references.data);
     } catch (err) {
       setError((err as Error).message || 'Failed to load data');
     } finally {
@@ -69,11 +70,13 @@ function MyData() {
         <div style={{ color: 'red', marginTop: '10px' }}>Error: {error}</div>
       )}
 
-      <div style={{ marginTop: '20px' }}>
-        <p>Found {data.length} records:</p>
-        <pre style={{ background: '#f5f5f5', padding: '10px' }}>
-          {JSON.stringify(data, null, 2)}
-        </pre>
+      {/* Data List */}
+      <div className="flex-1 overflow-y-auto p-3">
+        <div className="space-y-2">
+          {data.length && data.map((item, index) => (
+            <Document key={index} item={item} />
+          ))}
+        </div>
       </div>
     </div>
   );
