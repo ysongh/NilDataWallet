@@ -14,7 +14,7 @@ interface AccessRequest {
   origin: string;
   timestamp: number;
   type: string;
-  message?: string;
+  userPrivateData?: string;
 }
 
 function Requests() {
@@ -73,18 +73,7 @@ function Requests() {
   console.log(pendingRequests, "pendingRequests")
 
   const createData = async (requestId: number) => {
-    console.log(pendingRequests[0])
-
-    const userPrivateData = {
-      _id: crypto.randomUUID(),
-      name: "Coder",
-      event_name: 'Hackathon',
-      travel_date: '02/04/2025',
-      departure_airport: 'John F. Kennedy International',
-      destination: 'London Heathrow',
-      gate_number: '1',
-      additional_note: 'I like to read book'
-    };
+    console.log(pendingRequests[0]);
 
     const user = await SecretVaultUserClient.from({
       baseUrls: "https://nildb-stg-n1.nillion.network,https://nildb-stg-n2.nillion.network,https://nildb-stg-n3.nillion.network".split(','),
@@ -102,9 +91,10 @@ function Requests() {
         write: false, // Builder cannot modify the data
         execute: true, // Builder can run queries on the data
       },
-       // @ts-ignore
+      // @ts-ignore
       collection: pendingRequests[0].collectionId,
-      data: [userPrivateData],
+      // @ts-ignore
+      data: [pendingRequests[0].userPrivateData],
     });
 
     console.log(uploadResults);
@@ -152,7 +142,9 @@ function Requests() {
               ) : (
                 <>
                   <p className="m-0 mb-3 text-xs text-gray-600">
-                    Data: {request.message}
+                    <pre style={{ background: '#f5f5f5', padding: '10px' }}>
+                      {JSON.stringify(request.userPrivateData, null, 2)}
+                    </pre>
                   </p>
                   <button
                     onClick={() => createData(request.id)}
