@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 interface DataItem {
   builder: string;
   collection: string;
@@ -5,6 +7,8 @@ interface DataItem {
 }
 
 function Document({ item }: { item: DataItem }) {
+  const navigate = useNavigate();
+
   const truncateString = (str: string, num: number = 12): string => {
     if (str.length <= num) return str;
     return str.slice(0, num) + '...';
@@ -81,6 +85,7 @@ function Document({ item }: { item: DataItem }) {
 
       {/* View Details Button */}
       <button
+        onClick={() => navigate(`/data/${item.collection}/${item.document}`)}
         className="w-full py-2 px-3 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         View Full Details
