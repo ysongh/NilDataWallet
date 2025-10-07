@@ -51,6 +51,25 @@ function DataDetail() {
     }
   };
 
+  const deleteUserData = async () => {
+    setError(null);
+
+    try {
+      const user = await createSecretVaultUserClient(nillionapikey);
+
+      const userData = await user.deleteData({
+        collection: collectionId || "",
+        document: documentId || "",
+      });
+      console.log(userData);
+      window.history.back();
+    } catch (err) {
+      setError((err as Error).message || 'Failed to delete data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const identity = getLocalStorage("apikey");
     console.log(identity);
@@ -260,6 +279,12 @@ function DataDetail() {
                   </div>
                 </div>
               )}
+              <button
+                onClick={deleteUserData}
+                className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              >
+                Delete
+              </button>
             </div>
           </div>
 
