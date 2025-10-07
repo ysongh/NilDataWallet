@@ -4,6 +4,7 @@ import { Keypair } from '@nillion/nuc';
 import { SecretVaultUserClient } from '@nillion/secretvaults';
 
 import { getLocalStorage } from '../utils/localStorage/localStorage';
+import { formatDate, formatKey } from '../utils/format/format';
 
 interface ACL {
   grantee: string;
@@ -80,25 +81,6 @@ function DataDetail() {
     } catch (err) {
       console.error('Failed to copy:', err);
     }
-  };
-
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const formatKey = (key: string): string => {
-    return key
-      .replace(/_/g, ' ')
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
   };
 
   // Separate system fields from custom fields

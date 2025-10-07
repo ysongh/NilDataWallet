@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
+import { truncateString } from "../utils/format/format";
+
 interface DataItem {
   builder: string;
   collection: string;
@@ -8,11 +10,6 @@ interface DataItem {
 
 function Document({ item }: { item: DataItem }) {
   const navigate = useNavigate();
-
-  const truncateString = (str: string, num: number = 12): string => {
-    if (str.length <= num) return str;
-    return str.slice(0, num) + '...';
-  };
 
   const copyToClipboard = async (text: string): Promise<void> => {
     try {
