@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Keypair } from '@nillion/nuc';
-import { SecretVaultUserClient } from '@nillion/secretvaults';
 
 import { getLocalStorage } from '../utils/localStorage/localStorage';
+import { createSecretVaultUserClient } from '../services/secretVaultClient';
 import Document from '../components/Document';
 
 function MyData() {
@@ -17,13 +16,7 @@ function MyData() {
     setError(null);
 
     try {
-      const userKeypair = Keypair.from(nillionapikey);
-
-      // Create user client
-      const user = await SecretVaultUserClient.from({
-        baseUrls: "https://nildb-stg-n1.nillion.network,https://nildb-stg-n2.nillion.network,https://nildb-stg-n3.nillion.network".split(','),
-        keypair: userKeypair,
-      });
+      const user = await createSecretVaultUserClient(nillionapikey);
 
       const references = await user.listDataReferences();
       console.log(references);

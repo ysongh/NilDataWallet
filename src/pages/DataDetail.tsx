@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Keypair } from '@nillion/nuc';
-import { SecretVaultUserClient } from '@nillion/secretvaults';
 
 import { getLocalStorage } from '../utils/localStorage/localStorage';
 import { formatDate, formatKey } from '../utils/format/format';
+import { createSecretVaultUserClient } from '../services/secretVaultClient';
 
 interface ACL {
   grantee: string;
@@ -30,18 +29,12 @@ function DataDetail() {
   const [error, setError] = useState<string | null>(null);
   const [nillionapikey, setNillionapikey] = useState<string>("");
 
-  const readCollection = async () => {
+  const readUserData = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const userKeypair = Keypair.from(nillionapikey);
-
-      // Create user client
-      const user = await SecretVaultUserClient.from({
-        baseUrls: "https://nildb-stg-n1.nillion.network,https://nildb-stg-n2.nillion.network,https://nildb-stg-n3.nillion.network".split(','),
-        keypair: userKeypair,
-      });
+      const user = await createSecretVaultUserClient(nillionapikey);
 
       const userData = await user.readData({
         collection: collectionId || "",
@@ -69,7 +62,7 @@ function DataDetail() {
 
   useEffect(() => {
     if (nillionapikey) {
-      readCollection();
+      readUserData();
     }
   }, [nillionapikey]);
 
@@ -270,7 +263,7 @@ function DataDetail() {
             </div>
           </div>
 
-            <button onClick={readCollection} disabled={loading}>
+            <button onClick={readUserData} disabled={loading}>
               {loading ? 'Loading...' : 'Refresh Data'}
             </button>
 
