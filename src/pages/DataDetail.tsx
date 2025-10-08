@@ -70,6 +70,27 @@ function DataDetail() {
     }
   };
 
+  const revokeAccess = async (grantee: string) => {
+    setError(null);
+
+    try {
+      const user = await createSecretVaultUserClient(nillionapikey);
+
+      await user.revokeAccess({
+        //@ts-ignore
+        grantee: grantee,
+        collection: collectionId || "",
+        document: documentId || "",
+      });
+
+    } catch (err) {
+      console.error(err);
+      setError((err as Error).message || 'Failed to revoke access');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const identity = getLocalStorage("apikey");
     console.log(identity);
@@ -229,7 +250,7 @@ function DataDetail() {
                             </code>
                           </div>
                           <div className="grid grid-cols-3 gap-2">
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center gap-1.5" onClick={() => revokeAccess(acl.grantee)}>
                               <div className={`w-3 h-3 rounded-full ${acl.read ? 'bg-green-500' : 'bg-gray-300'}`} />
                               <span className="text-xs text-gray-700">Read</span>
                             </div>
