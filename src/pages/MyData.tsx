@@ -9,7 +9,6 @@ function MyData() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [nillionapikey, setNillionapikey] = useState<string>("");
-  const [nillionDiD, setNillionDiD] = useState<string>("");
 
   const readCollection = async () => {
     setLoading(true);
@@ -36,8 +35,6 @@ function MyData() {
     if (identity) {
       //@ts-ignore
       setNillionapikey(identity.privateKey);
-      //@ts-ignore
-      setNillionDiD(identity.did);
     }
   }, [])
 
@@ -48,28 +45,29 @@ function MyData() {
   }, [nillionapikey]);
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>My Data</h1>
-
-      <p>{nillionDiD}</p>
-
-      <p>Reading all records in your Nillion Private Storage collection</p>
-
-      <button onClick={readCollection} disabled={loading}>
-        {loading ? 'Loading...' : 'Refresh Data'}
-      </button>
-
-      {error && (
-        <div style={{ color: 'red', marginTop: '10px' }}>Error: {error}</div>
-      )}
+    <div className="p-4">
+      <h1 className="text-2xl">
+        My Documents
+      </h1>
 
       {/* Data List */}
-      <div className="flex-1 overflow-y-auto p-3">
+      <div className="flex-1 overflow-y-auto">
+        <h2 className="text-right text-md mb-2 text-gray-500">
+          {data.length} Documents
+        </h2>
         <div className="space-y-2">
           {data.length && data.map((item, index) => (
             <Document key={index} item={item} />
           ))}
         </div>
+
+        <button onClick={readCollection} disabled={loading}>
+          {loading ? 'Loading...' : 'Refresh Data'}
+        </button>
+
+        {error && (
+          <div style={{ color: 'red', marginTop: '10px' }}>Error: {error}</div>
+        )}
       </div>
     </div>
   );
