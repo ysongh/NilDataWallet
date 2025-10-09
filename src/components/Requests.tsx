@@ -3,6 +3,7 @@ import { Keypair } from '@nillion/nuc';
 import { SecretVaultUserClient } from '@nillion/secretvaults';
 
 import { getLocalStorage } from '../utils/localStorage/localStorage';
+import { EXTENSION_ID } from '../keys';
 
 interface TabInfo {
   title?: string;
@@ -48,29 +49,36 @@ function Requests() {
       })
     }
 
-    // Get pending access requests
-    chrome.runtime.sendMessage({ type: 'GET_PENDING_REQUESTS' }, (response) => {
-      console.log(response);
-      if (response?.requests) {
-        setPendingRequests(response.requests)
+    // Get pending access requests - Add EXTENSION_ID
+    chrome.runtime.sendMessage(
+      EXTENSION_ID,
+      { type: 'GET_PENDING_REQUESTS' },
+      (response) => {
+        console.log(response);
+        if (response?.requests) {
+          setPendingRequests(response.requests)
+        }
       }
-    })
+    )
   }, [])
 
   const handleAccessRequest = (requestId: number, granted: boolean) => {
-    chrome.runtime.sendMessage({
-      type: 'RESPOND_TO_REQUEST',
-      requestId,
-      granted,
-      nillionDiD,
-      nillionDiDObj
-    })
+    chrome.runtime.sendMessage(
+      EXTENSION_ID,
+      {
+        type: 'RESPOND_TO_REQUEST',
+        requestId,
+        granted,
+        nillionDiD,
+        nillionDiDObj
+      }
+    )
     
     // Remove from local state
     setPendingRequests(prev => prev.filter(r => r.id !== requestId))
   }
 
-  console.log(pendingRequests, "pendingRequests")
+  console.log(pendingRequests, "pendingRequests", currentTab)
 
   const createData = async (requestId: number) => {
     console.log(pendingRequests[0]);
@@ -99,28 +107,32 @@ function Requests() {
 
     console.log(uploadResults);
 
-    chrome.runtime.sendMessage({
-      type: 'CREATE_DATA_SUCCESS',
-      requestId
-    })
+    chrome.runtime.sendMessage(
+      EXTENSION_ID,
+      {
+        type: 'CREATE_DATA_SUCCESS',
+        requestId
+      }
+    )
     
     // Remove from local state
     setPendingRequests(prev => prev.filter(r => r.id !== requestId))
   }
 
   const rejectRequest = (requestId: number) => {
-    chrome.runtime.sendMessage({
-      type: 'REJECT',
-      requestId
-    })
+    chrome.runtime.sendMessage(
+      EXTENSION_ID,
+      {
+        type: 'REJECT',
+        requestId
+      }
+    )
 
     setPendingRequests(prev => prev.filter(r => r.id !== requestId))
   }
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>My React Extension</h1>
-      
+    <div style={{ fontFamily: 'Arial, sans-serif' }}>
       {/* Access Requests Section */}
       {pendingRequests.length > 0 && (
         <div className="mb-5 p-4 bg-amber-50 rounded-lg border border-amber-200">
@@ -175,12 +187,6 @@ function Requests() {
           ))}
         </div>
       )}
-      
-      <div style={{ marginBottom: '20px' }}>
-        <h3>Current Tab:</h3>
-        <p><strong>Title:</strong> {currentTab.title || 'Unknown'}</p>
-        <p><strong>URL:</strong> {currentTab.url || 'Unknown'}</p>
-      </div>
     </div>
   )
 }

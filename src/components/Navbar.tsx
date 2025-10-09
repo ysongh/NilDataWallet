@@ -44,7 +44,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {isRequest && <Requests />}
+      <Requests />
 
       {/* Dropdown Menu */}
       {isMenuOpen && (
