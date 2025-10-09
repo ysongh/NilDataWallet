@@ -24,6 +24,7 @@ interface UserData {
 function DataDetail() {
   const { collectionId, documentId } = useParams();
 
+  // @ts-ignore
   const [data, setData] = useState<UserData>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
