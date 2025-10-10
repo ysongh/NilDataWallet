@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { getLocalStorage } from '../utils/localStorage/localStorage';
 
 export default function Home() {
+  const navigate = useNavigate();
+
   const [userDID, setUserDID] = useState<string>("");
   const [copied, setCopied] = useState<boolean>(false);
 
@@ -11,6 +14,9 @@ export default function Home() {
     if (identity) {
       //@ts-ignore
       setUserDID(identity.did);
+    }
+    else {
+      navigate("/createdid");
     }
   }, [])
 
@@ -98,7 +104,10 @@ export default function Home() {
             <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
               <h3 className="text-sm font-bold text-gray-800 mb-3">Quick Actions</h3>
               <div className="grid grid-cols-2 gap-2">
-                <button className="p-3 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button
+                  onClick={() => navigate("/mydata")}
+                  className="p-3 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
                   <svg className="w-5 h-5 text-blue-600 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
