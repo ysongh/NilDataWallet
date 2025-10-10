@@ -62,7 +62,7 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
       timestamp: message.timestamp,
       tabId: sender.tab?.id,
       sender: sender,
-      message: message.data.message,
+      collectionName: message.data.collectionName,
       builderDid: message.data.builderDid,
       delegationToken: message.data.delegationToken,
       collectionId: message.data.collectionId,

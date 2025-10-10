@@ -12,6 +12,7 @@ interface TabInfo {
 
 interface AccessRequest {
   id: number;
+  collectionName: string;
   origin: string;
   timestamp: number;
   type: string;
@@ -162,6 +163,7 @@ function Requests() {
                 </>
               ) : (
                 <>
+                  <h2 className="text-lg font-bold mb-1">{request.collectionName}</h2>
                   <p className="m-0 mb-3 text-xs text-gray-600">
                     <pre style={{ background: '#f5f5f5', padding: '10px' }}>
                       {JSON.stringify(request.userPrivateData, null, 2)}
