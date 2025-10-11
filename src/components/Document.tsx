@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 import { truncateString } from "../utils/format/format";
+import { getNameById } from "../utils/localStorage/localStorage";
 
 interface DataItem {
   builder: string;
@@ -23,6 +24,13 @@ function Document({ item }: { item: DataItem }) {
     <div 
       className="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-md transition-shadow"
     >
+      {/* Collectio Name */}
+      <div className="mb-2">
+        <h2 className="text-lg font-bold text-gray-800">
+          {getNameById(item.collection) || "Collection"}
+        </h2>
+      </div>
+
       {/* Builder */}
       <div className="mb-2">
         <div className="flex items-center justify-between mb-1">

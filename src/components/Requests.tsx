@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Keypair } from '@nillion/nuc';
 import { SecretVaultUserClient } from '@nillion/secretvaults';
 
-import { getLocalStorage } from '../utils/localStorage/localStorage';
+import { getLocalStorage, storeIdToName } from '../utils/localStorage/localStorage';
 import { EXTENSION_ID } from '../keys';
 
 interface TabInfo {
@@ -107,6 +107,9 @@ function Requests() {
     });
 
     console.log(uploadResults);
+    
+    // @ts-ignore
+    storeIdToName(pendingRequests[0].collectionId, pendingRequests[0].collectionName);
 
     chrome.runtime.sendMessage(
       EXTENSION_ID,
