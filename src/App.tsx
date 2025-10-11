@@ -7,12 +7,16 @@ import MyData from "./pages/MyData";
 import DataDetail from "./pages/DataDetail";
 import Home from "./pages/Home";
 import Test from "./pages/Test";
+import Setting from "./pages/Setting";
 
 function App() {
   return (
     <HashRouter>
       <Navbar />
       <Routes>
+        <Route
+          path="/setting"
+          element={<Setting />} />
         <Route
           path="/data/:collectionId/:documentId"
           element={<DataDetail />} />
