@@ -251,16 +251,47 @@ function DataDetail() {
                             </code>
                           </div>
                           <div className="grid grid-cols-3 gap-2">
-                            <div className="flex items-center gap-1.5" onClick={() => revokeAccess(acl.grantee)}>
-                              <div className={`w-3 h-3 rounded-full ${acl.read ? 'bg-green-500' : 'bg-gray-300'}`} />
-                              <span className="text-xs text-gray-700">Read</span>
-                            </div>
                             <div className="flex items-center gap-1.5">
-                              <div className={`w-3 h-3 rounded-full ${acl.write ? 'bg-green-500' : 'bg-gray-300'}`} />
+                              <button
+                                onClick={() => revokeAccess(acl.grantee)}
+                                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                                  acl.read ? 'bg-blue-600' : 'bg-gray-300'
+                                }`}
+                              >
+                                <span
+                                  className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                                    acl.read ? 'translate-x-5' : 'translate-x-1'
+                                  }`}
+                                />
+                              </button>
+                              <span className="text-xs text-gray-700">Read</span>
+                             </div> 
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                                  acl.write ? 'bg-blue-600' : 'bg-gray-300'
+                                }`}
+                              >
+                                <span
+                                  className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                                    acl.write ? 'translate-x-5' : 'translate-x-1'
+                                  }`}
+                                />
+                              </button>
                               <span className="text-xs text-gray-700">Write</span>
                             </div>
                             <div className="flex items-center gap-1.5">
-                              <div className={`w-3 h-3 rounded-full ${acl.execute ? 'bg-green-500' : 'bg-gray-300'}`} />
+                              <button
+                                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                                  acl.execute ? 'bg-blue-600' : 'bg-gray-300'
+                                }`}
+                              >
+                                <span
+                                  className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                                    acl.execute ? 'translate-x-5' : 'translate-x-1'
+                                  }`}
+                                />
+                              </button>
                               <span className="text-xs text-gray-700">Execute</span>
                             </div>
                           </div>
