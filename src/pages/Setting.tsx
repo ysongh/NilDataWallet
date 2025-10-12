@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Setting() {
+  const navigate = useNavigate();
+
   const [userDID] = useState<string>("did:nil:03c12280fb4e04d149f29e72e8df5aa44624acaa0746b24106837ce4a8baba3b1c");
   const [showExportModal, setShowExportModal] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
@@ -98,6 +101,7 @@ export default function Setting() {
                     Import DID
                   </button>
                   <button
+                    onClick={() => navigate("/createdid")}
                     className="w-full py-2.5 px-3 bg-purple-600 hover:bg-purple-700 text-white text-xs font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
                   >
                     Generate New DID

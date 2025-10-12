@@ -51,7 +51,7 @@ export default function CreateDID() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="bg-gray-50 p-4">
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
