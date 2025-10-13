@@ -1,8 +1,14 @@
+import { useNavigate } from 'react-router-dom';
+
+import { setLocalStorage } from "../../utils/localStorage/localStorage";
+
 function DeleteModal({ setShowDeleteModal } : { setShowDeleteModal: Function}) {
-   const handleDeleteDID = (): void => {
-    // Implement delete logic
-    console.log('Deleting DID...');
+  const navigate = useNavigate();
+
+  const handleDeleteDID = (): void => {
+    setLocalStorage("apikey", null);
     setShowDeleteModal(false);
+    navigate("/createdid");
   };
 
   return (
