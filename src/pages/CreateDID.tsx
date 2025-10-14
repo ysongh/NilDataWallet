@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Keypair } from '@nillion/nuc';
 
 import { setLocalStorage } from '../utils/localStorage/localStorage';
+import { encryptPrivateKey, decryptPrivateKey } from '../utils/keyEncryption/KeyEncryption';
 
 export default function CreateDID() {
   const [privateKey, setPrivateKey] = useState<string>('');
@@ -19,9 +20,17 @@ export default function CreateDID() {
         didObj: keypair.toDid(),
       };
       console.log(identity);
+      
+      const encrypted = await encryptPrivateKey(identity.privateKey, "Test");
+      console.log(encrypted);
+
+      const decrypted = await decryptPrivateKey(encrypted, "Test");
+      console.log(decrypted);
+
       setLocalStorage("apikey", identity);
       setIsGenerating(false);
     } catch (error) {
+      console.error(error);
       setIsGenerating(false);
     }
   };
