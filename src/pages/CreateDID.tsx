@@ -6,6 +6,7 @@ import { encryptPrivateKey, decryptPrivateKey } from '../utils/keyEncryption/Key
 
 export default function CreateDID() {
   const [privateKey, setPrivateKey] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'generate' | 'import'>('generate');
 
@@ -13,18 +14,19 @@ export default function CreateDID() {
     try {
       setIsGenerating(true);
       const keypair = Keypair.generate();
+
+      const encrypted = await encryptPrivateKey(keypair.privateKey('hex'), password);
+      console.log(encrypted);
+
       const identity = {
-        privateKey: keypair.privateKey('hex'),
+        privateKey: encrypted,
         publicKey: keypair.publicKey('hex'),
         did: keypair.toDidString(),
         didObj: keypair.toDid(),
       };
       console.log(identity);
-      
-      const encrypted = await encryptPrivateKey(identity.privateKey, "Test");
-      console.log(encrypted);
 
-      const decrypted = await decryptPrivateKey(encrypted, "Test");
+      const decrypted = await decryptPrivateKey(encrypted, password);
       console.log(decrypted);
 
       setLocalStorage("apikey", identity);
@@ -40,8 +42,11 @@ export default function CreateDID() {
       setIsGenerating(true);
       const UserKeypair = Keypair.from(privateKey);
 
+      const encrypted = await encryptPrivateKey(UserKeypair.privateKey('hex'), password);
+      console.log(encrypted);
+
       const identity = {
-        privateKey: UserKeypair.privateKey('hex'),
+        privateKey: encrypted,
         publicKey: UserKeypair.publicKey('hex'),
         did: UserKeypair.toDidString(),
         didObj: UserKeypair.toDid(),
@@ -96,7 +101,19 @@ export default function CreateDID() {
         </div>
 
         <div className="space-y-4">
-          {/* Generate Tab */}
+          <div className="space-y-2">
+            <label htmlFor="import-did" className="block text-sm font-medium text-gray-700">
+              Enter Password:
+            </label>
+            <input
+              id="import-privatekey"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-md text-sm font-mono resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+           {/* Generate Tab */}
           {activeTab === 'generate' && (
             <>
               {/* Generate Button */}
