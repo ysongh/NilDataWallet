@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { setLocalStorage } from '../utils/localStorage/localStorage';
+
 export default function UnlockDID() {
   const navigate = useNavigate();
 
@@ -19,19 +21,9 @@ export default function UnlockDID() {
 
     setIsUnlocking(true);
     
-    // Simulate unlock process - replace with actual authentication logic
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Replace this with actual password verification
-      const isValid = password === 'demo123'; // Demo password for testing
-      
-      if (isValid) {
-        console.log('Unlocking extension...');
-        // Navigate to home page or main extension interface
-      } else {
-        setError('Incorrect password. Please try again.');
-      }
+      setLocalStorage("password", password);
+      navigate("/");
     } catch (err) {
       setError('An error occurred. Please try again.');
     } finally {

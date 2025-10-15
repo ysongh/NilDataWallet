@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Keypair } from '@nillion/nuc';
 
 import { setLocalStorage } from '../utils/localStorage/localStorage';
 import { encryptPrivateKey, decryptPrivateKey } from '../utils/keyEncryption/KeyEncryption';
 
 export default function CreateDID() {
+  const navigate = useNavigate();
+
   const [privateKey, setPrivateKey] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
@@ -32,6 +35,7 @@ export default function CreateDID() {
       setLocalStorage("apikey", identity);
       setLocalStorage("password", password);
       setIsGenerating(false);
+      navigate("/");
     } catch (error) {
       console.error(error);
       setIsGenerating(false);
@@ -57,6 +61,7 @@ export default function CreateDID() {
       setLocalStorage("password", password);
       console.log(identity);
       setIsGenerating(false);
+      navigate("/");
     } catch (error) {
       setIsGenerating(false);
     }
