@@ -8,12 +8,16 @@ import DataDetail from "./pages/DataDetail";
 import Home from "./pages/Home";
 import Test from "./pages/Test";
 import Setting from "./pages/Setting";
+import UnlockDID from "./pages/UnlockDID";
 
 function App() {
   return (
     <HashRouter>
       <Navbar />
       <Routes>
+        <Route
+          path="/unlock"
+          element={<UnlockDID />} />
         <Route
           path="/setting"
           element={<Setting />} />
