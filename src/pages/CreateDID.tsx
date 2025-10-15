@@ -164,13 +164,12 @@ export default function CreateDID() {
             <>
               <div className="space-y-2">
                 <label htmlFor="import-did" className="block text-sm font-medium text-gray-700">
-                  Enter your DID:
+                  Enter your private key:
                 </label>
                 <textarea
                   id="import-privatekey"
                   value={privateKey}
                   onChange={(e) => setPrivateKey(e.target.value)}
-                  placeholder="did:example:123456789abcdefghi"
                   className="w-full p-3 border border-gray-300 rounded-md text-sm font-mono resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows={3}
                 />
@@ -187,15 +186,6 @@ export default function CreateDID() {
               >
                 Import DID
               </button>
-
-              <div className="mt-4 p-3 bg-gray-50 rounded-md">
-                <p className="text-xs text-gray-600">
-                  <span className="font-medium">Valid DID format:</span> did:method:identifier
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Example: did:web:example.com or did:key:z6MkpTHR8VN...
-                </p>
-              </div>
             </>
           )}
 
