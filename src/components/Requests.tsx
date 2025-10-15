@@ -3,6 +3,7 @@ import { Keypair } from '@nillion/nuc';
 import { SecretVaultUserClient } from '@nillion/secretvaults';
 
 import { getLocalStorage, storeIdToName } from '../utils/localStorage/localStorage';
+import { decryptPrivateKey } from '../utils/keyEncryption/KeyEncryption';
 import { EXTENSION_ID } from '../keys';
 
 interface TabInfo {
@@ -25,6 +26,7 @@ function Requests() {
   const [nillionDiD, setNillionDiD] = useState<string>("");
   const [nillionDiDObj, setNillionDiDObj] = useState<any>("");
   const [identity, setIdentity] = useState<any>("");
+  const [password, setPassword] = useState<string>('');
 
   useEffect(() => {
     const identity = getLocalStorage("apikey");
@@ -84,9 +86,12 @@ function Requests() {
   const createData = async (requestId: number) => {
     console.log(pendingRequests[0]);
 
+    const privateKey = await decryptPrivateKey(identity.privateKey, password);
+    console.log(privateKey);
+
     const user = await SecretVaultUserClient.from({
       baseUrls: "https://nildb-stg-n1.nillion.network,https://nildb-stg-n2.nillion.network,https://nildb-stg-n3.nillion.network".split(','),
-      keypair: Keypair.from(identity.privateKey),
+      keypair: Keypair.from(privateKey),
     });
     // User uploads data and grants builder limited access
     // @ts-ignore
@@ -172,6 +177,18 @@ function Requests() {
                       {JSON.stringify(request.userPrivateData, null, 2)}
                     </pre>
                   </p>
+                  <div className="space-y-2 mb-3">
+                    <label htmlFor="import-did" className="block text-sm font-medium text-gray-700">
+                      Enter Password:
+                    </label>
+                    <input
+                      id="import-privatekey"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full p-3 border border-gray-300 rounded-md text-sm font-mono resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
                   <div className="flex gap-2">
                     <button
                       onClick={() => createData(request.id)}

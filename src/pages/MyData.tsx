@@ -1,16 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { getLocalStorage } from '../utils/localStorage/localStorage';
 import { createSecretVaultUserClient } from '../services/secretVaultClient';
 import Document from '../components/Document';
+import { decryptPrivateKey } from '../utils/keyEncryption/KeyEncryption';
 
 function MyData() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [nillionapikey, setNillionapikey] = useState<string>("");
+  const [password, setPassword] = useState<string>('');
 
-  const readCollection = async () => {
+  // @ts-ignore
+  const readCollection = async (nillionapikey) => {
     setLoading(true);
     setError(null);
 
@@ -29,20 +31,17 @@ function MyData() {
     }
   };
 
-  useEffect(() => {
+  const getUserKey = async () => {
     const identity = getLocalStorage("apikey");
     console.log(identity);
     if (identity) {
+      // @ts-ignore
+      const privateKey = await decryptPrivateKey(identity.privateKey, password);
+      console.log(privateKey);
       //@ts-ignore
-      setNillionapikey(identity.privateKey);
+      readCollection(privateKey);
     }
-  }, [])
-
-  useEffect(() => {
-    if (nillionapikey) {
-      readCollection();
-    }
-  }, [nillionapikey]);
+  }
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -80,6 +79,29 @@ function MyData() {
         {error && (
           <div style={{ color: 'red', marginTop: '10px' }}>Error: {error}</div>
         )}
+
+        <div className="space-y-2 mb-3">
+          <label htmlFor="import-did" className="block text-sm font-medium text-gray-700">
+            Enter Password:
+          </label>
+          <input
+            id="import-privatekey"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-md text-sm font-mono resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        <button
+          onClick={getUserKey}
+          className={`w-full py-3 px-4 rounded-md text-white font-medium transition-colors ${
+            !password.trim()
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2'
+          }`}
+        >
+          Enter
+        </button>
+        </div>
       </div>
     </div>
   );

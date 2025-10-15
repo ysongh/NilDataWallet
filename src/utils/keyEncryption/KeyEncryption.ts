@@ -30,6 +30,7 @@ async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey>
   return crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
+      // @ts-ignore
       salt: salt,
       iterations: PBKDF2_ITERATIONS,
       hash: 'SHA-256',
