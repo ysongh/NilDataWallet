@@ -30,6 +30,7 @@ export default function CreateDID() {
       console.log(decrypted);
 
       setLocalStorage("apikey", identity);
+      setLocalStorage("password", password);
       setIsGenerating(false);
     } catch (error) {
       console.error(error);
@@ -53,6 +54,7 @@ export default function CreateDID() {
       };
 
       setLocalStorage("apikey", identity);
+      setLocalStorage("password", password);
       console.log(identity);
       setIsGenerating(false);
     } catch (error) {

@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { getLocalStorage } from '../utils/localStorage/localStorage';
 import { formatDate, formatKey } from '../utils/format/format';
 import { createSecretVaultUserClient } from '../services/secretVaultClient';
+import { decryptPrivateKey } from '../utils/keyEncryption/KeyEncryption';
 
 interface ACL {
   grantee: string;
@@ -35,6 +36,12 @@ function DataDetail() {
     setError(null);
 
     try {
+      const identity = getLocalStorage("apikey");
+      const password = getLocalStorage("password");
+
+      // @ts-ignore
+      const nillionapikey = await decryptPrivateKey(identity.privateKey, password);
+
       const user = await createSecretVaultUserClient(nillionapikey);
 
       const userData = await user.readData({

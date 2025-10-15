@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { getLocalStorage } from '../utils/localStorage/localStorage';
 import { createSecretVaultUserClient } from '../services/secretVaultClient';
@@ -9,8 +9,11 @@ function MyData() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [password, setPassword] = useState<string>('');
 
+  useEffect(() => {
+   getUserKey()
+  }, [])
+  
   // @ts-ignore
   const readCollection = async (nillionapikey) => {
     setLoading(true);
@@ -33,11 +36,11 @@ function MyData() {
 
   const getUserKey = async () => {
     const identity = getLocalStorage("apikey");
+    const password = getLocalStorage("password");
     console.log(identity);
-    if (identity) {
+    if (identity && password) {
       // @ts-ignore
       const privateKey = await decryptPrivateKey(identity.privateKey, password);
-      console.log(privateKey);
       //@ts-ignore
       readCollection(privateKey);
     }
@@ -79,29 +82,6 @@ function MyData() {
         {error && (
           <div style={{ color: 'red', marginTop: '10px' }}>Error: {error}</div>
         )}
-
-        <div className="space-y-2 mb-3">
-          <label htmlFor="import-did" className="block text-sm font-medium text-gray-700">
-            Enter Password:
-          </label>
-          <input
-            id="import-privatekey"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-md text-sm font-mono resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        <button
-          onClick={getUserKey}
-          className={`w-full py-3 px-4 rounded-md text-white font-medium transition-colors ${
-            !password.trim()
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2'
-          }`}
-        >
-          Enter
-        </button>
-        </div>
       </div>
     </div>
   );
