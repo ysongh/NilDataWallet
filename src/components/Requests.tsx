@@ -151,9 +151,12 @@ function Requests() {
       {/* Access Requests Section */}
       {pendingRequests.length > 0 && (
         <div className="mb-5 p-4 bg-amber-50 rounded-lg border border-amber-200">
-          <h3 className="m-0 mb-3 text-amber-800 font-semibold text-lg">Access Requests</h3>
+         
           {pendingRequests.map(request => (
             <div key={request.id} className="mb-3 p-3 bg-white rounded-md shadow-sm border border-gray-100">
+              <h3 className="m-0 mb-3 text-amber-800 font-semibold text-lg">
+                {request.type === "Get DID" ? "Request to Read your DID" : "Create Data"}
+              </h3>
               <p className="m-0 mb-2 font-bold text-gray-800">{request.origin}</p>
               {request.type === "Get DID" ? (
                 <>
