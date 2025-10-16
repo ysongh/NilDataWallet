@@ -62,7 +62,7 @@ function DataDetail() {
   const deleteUserData = async () => {
     setError(null);
 
-    try {
+    try {      
       const user = await createSecretVaultUserClient(nillionapikey);
 
       const userData = await user.deleteData({
@@ -100,12 +100,17 @@ function DataDetail() {
   };
 
   useEffect(() => {
-    const identity = getLocalStorage("apikey");
-    console.log(identity);
-    if (identity) {
-      //@ts-ignore
-      setNillionapikey(identity.privateKey);
+    const getNillionapikey = async () => {
+      const identity = getLocalStorage("apikey");
+      const password = getLocalStorage("password");
+      console.log(identity);
+      if (identity) {
+        //@ts-ignore
+        const nillionapikey = await decryptPrivateKey(identity.privateKey, password);
+        setNillionapikey(nillionapikey);
+      }
     }
+    getNillionapikey();
   }, [])
 
   useEffect(() => {
