@@ -27,6 +27,7 @@ function Requests() {
   const [nillionDiDObj, setNillionDiDObj] = useState<any>("");
   const [identity, setIdentity] = useState<any>("");
   const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const identity = getLocalStorage("apikey");
@@ -84,48 +85,53 @@ function Requests() {
   console.log(pendingRequests, "pendingRequests", currentTab)
 
   const createData = async (requestId: number) => {
-    console.log(pendingRequests[0]);
+    try{
+      setLoading(true);
 
-    const privateKey = await decryptPrivateKey(identity.privateKey, password);
-    console.log(privateKey);
+      const privateKey = await decryptPrivateKey(identity.privateKey, password);
 
-    const user = await SecretVaultUserClient.from({
-      baseUrls: "https://nildb-stg-n1.nillion.network,https://nildb-stg-n2.nillion.network,https://nildb-stg-n3.nillion.network".split(','),
-      keypair: Keypair.from(privateKey),
-    });
-    // User uploads data and grants builder limited access
-    // @ts-ignore
-    const uploadResults = await user.createData(pendingRequests[0].delegationToken, {
-       // @ts-ignore
-      owner: nillionDiD,
-      acl: {
-         // @ts-ignore
-        grantee: pendingRequests[0].builderDid, // Grant access to the builder
-        read: true, // Builder can read the data
-        write: false, // Builder cannot modify the data
-        execute: true, // Builder can run queries on the data
-      },
+      const user = await SecretVaultUserClient.from({
+        baseUrls: "https://nildb-stg-n1.nillion.network,https://nildb-stg-n2.nillion.network,https://nildb-stg-n3.nillion.network".split(','),
+        keypair: Keypair.from(privateKey),
+      });
+      // User uploads data and grants builder limited access
       // @ts-ignore
-      collection: pendingRequests[0].collectionId,
+      const uploadResults = await user.createData(pendingRequests[0].delegationToken, {
+        // @ts-ignore
+        owner: nillionDiD,
+        acl: {
+          // @ts-ignore
+          grantee: pendingRequests[0].builderDid, // Grant access to the builder
+          read: true, // Builder can read the data
+          write: false, // Builder cannot modify the data
+          execute: true, // Builder can run queries on the data
+        },
+        // @ts-ignore
+        collection: pendingRequests[0].collectionId,
+        // @ts-ignore
+        data: [pendingRequests[0].userPrivateData],
+      });
+
+      console.log(uploadResults);
+      
       // @ts-ignore
-      data: [pendingRequests[0].userPrivateData],
-    });
+      storeIdToName(pendingRequests[0].collectionId, pendingRequests[0].collectionName);
 
-    console.log(uploadResults);
-    
-    // @ts-ignore
-    storeIdToName(pendingRequests[0].collectionId, pendingRequests[0].collectionName);
-
-    chrome.runtime.sendMessage(
-      EXTENSION_ID,
-      {
-        type: 'CREATE_DATA_SUCCESS',
-        requestId
-      }
-    )
-    
-    // Remove from local state
-    setPendingRequests(prev => prev.filter(r => r.id !== requestId))
+      chrome.runtime.sendMessage(
+        EXTENSION_ID,
+        {
+          type: 'CREATE_DATA_SUCCESS',
+          requestId
+        }
+      )
+      
+      // Remove from local state
+      setPendingRequests(prev => prev.filter(r => r.id !== requestId));
+      setLoading(false);
+    } catch(err) {
+      console.error(err);
+      setLoading(false);
+    }
   }
 
   const rejectRequest = (requestId: number) => {
@@ -192,9 +198,14 @@ function Requests() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => createData(request.id)}
-                      className="flex-1 py-2 px-4 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                      disabled={loading}
+                      className={`flex-1 py-2 px-4 text-white text-sm font-medium rounded-md transition-colors ${
+                            loading
+                          ? 'bg-gray-400 cursor-not-allowed'
+                          : 'bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2'
+                      }`}
                     >
-                      Approve
+                      {loading ? "Creating..." : "Approve"}
                     </button>
                     <button
                       onClick={() => rejectRequest(request.id)}
