@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getLocalStorage } from '../utils/localStorage/localStorage';
+import NetworkSelector from '../components/NetworkSelector';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -103,6 +104,9 @@ export default function Home() {
                 </button>
               </div>
             </div>
+
+            {/* Network Selector */}
+            <NetworkSelector />
 
             {/* Quick Actions */}
             <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
