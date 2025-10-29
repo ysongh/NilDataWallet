@@ -1,15 +1,12 @@
 import { useState } from 'react';
 
-// Mock networks - replace with your actual network data
 const networks = [
-  { id: 1, name: "Mainnet", rpc: "https://mainnet.example.com", status: "active" },
-  { id: 2, name: "Testnet", rpc: "https://testnet.example.com", status: "active" },
-  { id: 3, name: "Local", rpc: "http://localhost:8545", status: "inactive" }
+  { id: 2, name: "Nillion Testnet", nildbNode: "https://nildb-stg-n1.nillion.network", status: "active" },
 ];
 
 function NetworkSelector() {
   const [networkDropdownOpen, setNetworkDropdownOpen] = useState<boolean>(false);
-  const [currentNetwork, setCurrentNetwork] = useState<string>("Mainnet");
+  const [currentNetwork, setCurrentNetwork] = useState<string>("Nillion Testnet");
 
   const handleNetworkSelect = (networkName: string) => {
     setCurrentNetwork(networkName);
@@ -73,7 +70,7 @@ function NetworkSelector() {
                       <div className={`w-2 h-2 rounded-full ${network.status === 'active' ? 'bg-green-500' : 'bg-gray-400'}`} />
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-800">{network.name}</p>
-                        <p className="text-xs text-gray-500 truncate">{network.rpc}</p>
+                        <p className="text-xs text-gray-500 truncate">{network.nildbNode}</p>
                       </div>
                       {currentNetwork === network.name && (
                         <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
