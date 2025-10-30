@@ -203,9 +203,14 @@ export default function Setting() {
                   <span className="text-xs text-gray-600">Build</span>
                   <span className="text-xs font-medium text-gray-800">2025.10.10</span>
                 </div>
-                <button className="w-full py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-medium rounded-md transition-colors focus:outline-none mt-2">
+                <a
+                  href="https://github.com/ysongh/NilDataWallet/blob/master/README.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-medium rounded-md transition-colors focus:outline-none mt-2"
+                >
                   View Documentation
-                </button>
+                </a>
               </div>
             </div>
 

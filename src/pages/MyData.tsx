@@ -26,7 +26,7 @@ function MyData() {
       console.log(references);
 
       //@ts-ignore
-      setData(references.data);
+      setData(references.data || []);
     } catch (err) {
       setError((err as Error).message || 'Failed to load data');
     } finally {
@@ -70,7 +70,7 @@ function MyData() {
       {/* Data List */}
       <div className="flex-1 overflow-y-auto p-3">
         <div className="space-y-2">
-          {data.length && data.map((item, index) => (
+          {data.map((item, index) => (
             <Document key={index} item={item} />
           ))}
         </div>
