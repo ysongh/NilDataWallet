@@ -1,7 +1,11 @@
+import { useNavigate } from "react-router-dom";
+
 function ExportModal({ setShowExportModal } : { setShowExportModal: Function}) {
+  const navigate = useNavigate();
+
   const handleExportDID = (): void => {
-    // Implement export logic
     console.log('Exporting DID...');
+    navigate("/seeprivatekey");
     setShowExportModal(false);
   };
 

@@ -9,12 +9,16 @@ import Home from "./pages/Home";
 import Test from "./pages/Test";
 import Setting from "./pages/Setting";
 import UnlockDID from "./pages/UnlockDID";
+import SeePrivateKey from "./pages/SeePrivateKey";
 
 function App() {
   return (
     <HashRouter>
       <Navbar />
       <Routes>
+        <Route
+          path="/seeprivatekey"
+          element={<SeePrivateKey />} />
         <Route
           path="/unlock"
           element={<UnlockDID />} />
