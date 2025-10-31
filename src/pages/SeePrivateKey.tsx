@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+import { decryptPrivateKey } from '../utils/keyEncryption/KeyEncryption';
+import { getLocalStorage } from '../utils/localStorage/localStorage';
+
 export default function SeePrivateKey() {
   const [password, setPassword] = useState<string>('');
   const [privateKey, setPrivateKey] = useState<string>('');
@@ -16,7 +19,10 @@ export default function SeePrivateKey() {
     }
     
     try {
-      setPrivateKey("Test")
+      const identity = getLocalStorage("apikey");
+      //@ts-ignore
+      const privateKey = await decryptPrivateKey(identity?.privateKey, password);
+      setPrivateKey(privateKey);
     } catch (err) {
       setError('An error occurred. Please try again.');
     } finally {
