@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -12,16 +13,18 @@ import UnlockDID from "./pages/UnlockDID";
 import SeePrivateKey from "./pages/SeePrivateKey";
 
 function App() {
+  const [isLogin, setIsLogin] = useState(false);
+
   return (
     <HashRouter>
-      <Navbar />
+      {isLogin && <Navbar setIsLogin={setIsLogin} />}
       <Routes>
         <Route
           path="/seeprivatekey"
           element={<SeePrivateKey />} />
         <Route
           path="/unlock"
-          element={<UnlockDID />} />
+          element={<UnlockDID setIsLogin={setIsLogin} />} />
         <Route
           path="/setting"
           element={<Setting />} />
@@ -33,7 +36,7 @@ function App() {
           element={<MyData />} />
         <Route
           path="/createdid"
-          element={<CreateDID />} />
+          element={<CreateDID setIsLogin={setIsLogin} />} />
         <Route
           path="/test"
           element={<Test />} />

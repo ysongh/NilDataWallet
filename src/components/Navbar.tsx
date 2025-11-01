@@ -1,17 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Requests from './Requests';
-import { setLocalStorage } from '../utils/localStorage/localStorage';
+import { getLocalStorage, setLocalStorage } from '../utils/localStorage/localStorage';
 
-export default function Navbar() {
+export default function Navbar({ setIsLogin }: { setIsLogin: Function }) {
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
+  useEffect(() => {
+    const password = getLocalStorage("password");
+    if (password) setIsLogin(true);
+  }, [])
+  
+
   const handleLock = () => {
     setLocalStorage("password", null);
     setIsMenuOpen(false);
+    setIsLogin(false);
     navigate("/unlock");
   }
 

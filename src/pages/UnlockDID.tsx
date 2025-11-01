@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { setLocalStorage } from '../utils/localStorage/localStorage';
 
-export default function UnlockDID() {
+export default function UnlockDID({ setIsLogin }: { setIsLogin: Function }) {
   const navigate = useNavigate();
 
   const [password, setPassword] = useState<string>('');
@@ -23,6 +23,7 @@ export default function UnlockDID() {
     
     try {
       setLocalStorage("password", password);
+      setIsLogin(true);
       navigate("/");
     } catch (err) {
       setError('An error occurred. Please try again.');

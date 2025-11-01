@@ -5,7 +5,7 @@ import { Keypair } from '@nillion/nuc';
 import { setLocalStorage } from '../utils/localStorage/localStorage';
 import { encryptPrivateKey, decryptPrivateKey } from '../utils/keyEncryption/KeyEncryption';
 
-export default function CreateDID() {
+export default function CreateDID({ setIsLogin }: { setIsLogin: Function }) {
   const navigate = useNavigate();
 
   const [privateKey, setPrivateKey] = useState<string>('');
@@ -35,6 +35,7 @@ export default function CreateDID() {
       setLocalStorage("apikey", identity);
       setLocalStorage("password", password);
       setIsGenerating(false);
+      setIsLogin(true);
       navigate("/");
     } catch (error) {
       console.error(error);
@@ -61,6 +62,7 @@ export default function CreateDID() {
       setLocalStorage("password", password);
       console.log(identity);
       setIsGenerating(false);
+      setIsLogin(true);
       navigate("/");
     } catch (error) {
       setIsGenerating(false);
