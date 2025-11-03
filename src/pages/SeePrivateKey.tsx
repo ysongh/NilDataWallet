@@ -24,7 +24,7 @@ export default function SeePrivateKey() {
       const privateKey = await decryptPrivateKey(identity?.privateKey, password);
       setPrivateKey(privateKey);
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError('Invalid password');
     } finally {
       setIsUnlocking(false);
     }

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { setLocalStorage } from '../utils/localStorage/localStorage';
+import { getLocalStorage, setLocalStorage } from '../utils/localStorage/localStorage';
+import { decryptPrivateKey } from '../utils/keyEncryption/KeyEncryption';
 
 export default function UnlockDID({ setIsLogin }: { setIsLogin: Function }) {
   const navigate = useNavigate();
@@ -22,11 +23,15 @@ export default function UnlockDID({ setIsLogin }: { setIsLogin: Function }) {
     setIsUnlocking(true);
     
     try {
+      const identity = getLocalStorage("apikey");
+      //@ts-ignore
+      const privateKey = await decryptPrivateKey(identity?.privateKey, password);
       setLocalStorage("password", password);
       setIsLogin(true);
       navigate("/");
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      console.error(err);
+      setError('Invalid password');
     } finally {
       setIsUnlocking(false);
     }
