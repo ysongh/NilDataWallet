@@ -169,26 +169,6 @@ export default function Setting() {
               </div>
             </div>
 
-            {/* Data Management Section */}
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-              <div className="px-3 py-2 bg-green-50 border-b border-green-100">
-                <h2 className="text-xs font-semibold text-green-800 uppercase">Data Management</h2>
-              </div>
-              <div className="p-3 space-y-2">
-                <button
-                  onClick={handleClearCache}
-                  className="w-full py-2.5 px-3 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
-                >
-                  Clear Cache
-                </button>
-                <button
-                  className="w-full py-2.5 px-3 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
-                >
-                  Export All Data
-                </button>
-              </div>
-            </div>
-
             {/* About Section */}
             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
               <div className="px-3 py-2 bg-gray-50 border-b border-gray-200">
