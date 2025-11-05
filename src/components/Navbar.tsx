@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Requests from './Requests';
 import { getLocalStorage, setLocalStorage } from '../utils/localStorage/localStorage';
 
-export default function Navbar({ setIsLogin }: { setIsLogin: Function }) {
+export default function Navbar({ isLogin, setIsLogin }: { isLogin: boolean, setIsLogin: Function }) {
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -14,13 +14,14 @@ export default function Navbar({ setIsLogin }: { setIsLogin: Function }) {
     if (password) setIsLogin(true);
   }, [])
   
-
   const handleLock = () => {
     setLocalStorage("password", null);
     setIsMenuOpen(false);
     setIsLogin(false);
     navigate("/unlock");
   }
+
+  if (!isLogin) return null;
 
   return (
     <div>

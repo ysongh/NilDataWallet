@@ -13,11 +13,11 @@ import UnlockDID from "./pages/UnlockDID";
 import SeePrivateKey from "./pages/SeePrivateKey";
 
 function App() {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
 
   return (
     <HashRouter>
-      {isLogin && <Navbar setIsLogin={setIsLogin} />}
+      <Navbar isLogin={isLogin} setIsLogin={setIsLogin} />
       <Routes>
         <Route
           path="/seeprivatekey"
