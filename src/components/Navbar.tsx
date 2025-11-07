@@ -30,10 +30,8 @@ export default function Navbar({ isLogin, setIsLogin }: { isLogin: boolean, setI
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                </svg>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                <img src="/icon128.png" alt="Logo" />
               </div>
               <span className="text-xl font-bold text-gray-800">NilData Wallet</span>
             </div>

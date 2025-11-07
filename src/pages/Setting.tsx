@@ -24,10 +24,6 @@ export default function Setting() {
     }
   };
 
-  const handleClearCache = (): void => {
-    console.log('Clearing cache...');
-  };
-
   return (
     <div className="w-full h-full bg-gray-50">
       <div className="w-full h-full flex flex-col">
